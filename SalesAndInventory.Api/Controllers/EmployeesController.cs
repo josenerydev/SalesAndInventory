@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SalesAndInventory.Models;
+using SalesAndInventory.Shared.Dtos;
 using SalesAndInventory.Shared.Services;
 
 namespace SalesAndInventory.Api.Controllers
@@ -16,7 +16,7 @@ namespace SalesAndInventory.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Employee>> Get()
+        public async Task<IEnumerable<EmployeeDto>> Get()
         {
             return await _employeeService.GetAllEmployees();
         }

@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SalesAndInventory.Data;
 using SalesAndInventory.Services;
-using SalesAndInventory.Shared.Data;
 using SalesAndInventory.Shared.Repositories;
 using SalesAndInventory.Shared.Services;
 
@@ -26,6 +25,8 @@ builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
 // Register the services
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+
+builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
 
