@@ -1,6 +1,15 @@
+using Microsoft.EntityFrameworkCore;
+using SalesAndInventory.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+
+var connectionString = builder.Configuration.GetConnectionString("SalesAndInventoryDbConnection");
+
+builder.Services.AddDbContext<SalesAndInventoryDbContext>(options =>
+    options.UseSqlServer(connectionString));
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
