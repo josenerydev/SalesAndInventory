@@ -22,7 +22,7 @@ namespace SalesAndInventory.Data
 
         public async Task<List<TEntity>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            return await _dbSet.ToListAsync(cancellationToken);
+            return await _dbSet.DefaultIfEmpty().ToListAsync(cancellationToken);
         }
 
         public async Task<TEntity> AddAsync(TEntity entity, CancellationToken cancellationToken = default)
