@@ -1,5 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using SalesAndInventory.Data;
+using SalesAndInventory.Services;
+using SalesAndInventory.Shared.Data;
+using SalesAndInventory.Shared.Repositories;
+using SalesAndInventory.Shared.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +21,10 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
+builder.Services.AddScoped(typeof(IEmployeeRepository), typeof(EmployeeRepository));
+builder.Services.AddScoped(typeof(IEmployeeService), typeof(EmployeeService));
 
 var app = builder.Build();
 
