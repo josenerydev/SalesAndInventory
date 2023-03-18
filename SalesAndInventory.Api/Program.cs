@@ -21,11 +21,11 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 // Inicialização do banco de dados para fins de teste
-using (var scope = app.Services.CreateScope())
-{
-    var context = scope.ServiceProvider.GetRequiredService<SalesAndInventoryDbContext>();
-    DbInitializer.InitializeDatabase(context);
-}
+//using (var scope = app.Services.CreateScope())
+//{
+//    var context = scope.ServiceProvider.GetRequiredService<SalesAndInventoryDbContext>();
+//    DbInitializer.InitializeDatabase(context);
+//}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -11,8 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalesAndInventory.Services"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalesAndInventory.Data", "SalesAndInventory.Data\SalesAndInventory.Data.csproj", "{774EC9F1-29BD-4BC8-885B-02729880A003}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalesAndInventory.Repositories", "SalesAndInventory.Repositories\SalesAndInventory.Repositories.csproj", "{291BB67A-B5DC-4FF5-BD9C-E4A0FA7F06DA}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalesAndInventory.Shared", "SalesAndInventory.Shared\SalesAndInventory.Shared.csproj", "{ACC1A3E2-6284-434F-A514-D1CE5185B2D3}"
 EndProject
 Global
@@ -37,10 +35,6 @@ Global
 		{774EC9F1-29BD-4BC8-885B-02729880A003}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{774EC9F1-29BD-4BC8-885B-02729880A003}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{774EC9F1-29BD-4BC8-885B-02729880A003}.Release|Any CPU.Build.0 = Release|Any CPU
-		{291BB67A-B5DC-4FF5-BD9C-E4A0FA7F06DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{291BB67A-B5DC-4FF5-BD9C-E4A0FA7F06DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{291BB67A-B5DC-4FF5-BD9C-E4A0FA7F06DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{291BB67A-B5DC-4FF5-BD9C-E4A0FA7F06DA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{ACC1A3E2-6284-434F-A514-D1CE5185B2D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{ACC1A3E2-6284-434F-A514-D1CE5185B2D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ACC1A3E2-6284-434F-A514-D1CE5185B2D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
