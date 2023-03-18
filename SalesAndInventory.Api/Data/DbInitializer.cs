@@ -1,6 +1,6 @@
-﻿using SalesAndInventory.Models;
+﻿using SalesAndInventory.Api.Models;
 
-namespace SalesAndInventory.Data
+namespace SalesAndInventory.Api.Data
 {
     public class DbInitializer
     {

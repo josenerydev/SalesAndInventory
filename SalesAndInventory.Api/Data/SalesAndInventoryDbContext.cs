@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SalesAndInventory.Models;
+using SalesAndInventory.Api.Models;
 using System.Reflection;
 
-namespace SalesAndInventory.Data
+namespace SalesAndInventory.Api.Data
 {
     public class SalesAndInventoryDbContext : DbContext
     {
@@ -12,6 +12,11 @@ namespace SalesAndInventory.Data
         public SalesAndInventoryDbContext(DbContextOptions<SalesAndInventoryDbContext> options)
             : base(options)
         {
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseLazyLoadingProxies();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

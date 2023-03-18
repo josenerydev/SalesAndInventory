@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SalesAndInventory.Models;
+using SalesAndInventory.Api.Models;
 
-namespace SalesAndInventory.Data.Configurations
+namespace SalesAndInventory.Api.Data.Configurations
 {
     public class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
     {

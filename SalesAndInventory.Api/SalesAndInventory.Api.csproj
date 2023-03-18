@@ -8,13 +8,9 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="6.0.15" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.15" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\SalesAndInventory.Data\SalesAndInventory.Data.csproj" />
-    <ProjectReference Include="..\SalesAndInventory.Services\SalesAndInventory.Services.csproj" />
   </ItemGroup>
 
 </Project>

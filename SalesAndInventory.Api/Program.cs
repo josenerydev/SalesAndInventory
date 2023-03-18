@@ -1,8 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using SalesAndInventory.Data;
-using SalesAndInventory.Services;
-using SalesAndInventory.Shared.Repositories;
-using SalesAndInventory.Shared.Services;
+using SalesAndInventory.Api.Data;
+using SalesAndInventory.Api.Repositories;
+using SalesAndInventory.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +19,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Register the repositories
-builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
 // Register the services
