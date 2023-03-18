@@ -1,47 +1,44 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SalesAndInventory.Shared.Data;
 using SalesAndInventory.Shared.Repositories;
 
 namespace SalesAndInventory.Data
 {
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly DbSet<TEntity> _dbSet;
+        private readonly SalesAndInventoryDbContext _dbContext;
 
-        public Repository(IUnitOfWork unitOfWork)
+        public Repository(SalesAndInventoryDbContext dbContext)
         {
-            _unitOfWork = unitOfWork;
-            _dbSet = _unitOfWork.Set<TEntity>();
+            _dbContext = dbContext;
         }
 
-        public async Task<TEntity> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+        public async Task<TEntity> GetByIdAsync(int id)
         {
-            return await _dbSet.FindAsync(new object[] { id }, cancellationToken);
+            return await _dbContext.Set<TEntity>().FindAsync(id);
         }
 
-        public async Task<List<TEntity>> GetAllAsync(CancellationToken cancellationToken = default)
+        public async Task<List<TEntity>> GetAllAsync()
         {
-            return await _dbSet.ToListAsync(cancellationToken);
+            return await _dbContext.Set<TEntity>().DefaultIfEmpty().ToListAsync();
         }
 
-        public async Task<TEntity> AddAsync(TEntity entity, CancellationToken cancellationToken = default)
+        public async Task<TEntity> AddAsync(TEntity entity)
         {
-            await _dbSet.AddAsync(entity, cancellationToken);
+            await _dbContext.Set<TEntity>().AddAsync(entity);
+            await _dbContext.SaveChangesAsync();
             return entity;
         }
 
-        public Task UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
+        public async Task UpdateAsync(TEntity entity)
         {
-            _dbSet.Update(entity);
-            return Task.CompletedTask;
+            _dbContext.Set<TEntity>().Update(entity);
+            await _dbContext.SaveChangesAsync();
         }
 
-        public async Task RemoveAsync(TEntity entity, CancellationToken cancellationToken = default)
+        public async Task RemoveAsync(TEntity entity)
         {
-            _dbSet.Remove(entity);
-            await Task.CompletedTask;
+            _dbContext.Set<TEntity>().Remove(entity);
+            await _dbContext.SaveChangesAsync();
         }
     }
-
 }

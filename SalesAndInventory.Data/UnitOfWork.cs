@@ -7,29 +7,35 @@ namespace SalesAndInventory.Data
     public class UnitOfWork : IUnitOfWork
     {
         private readonly SalesAndInventoryDbContext _context;
-        private IEmployeeRepository _employeeRepository;
+        private readonly Dictionary<Type, object> _repositories = new Dictionary<Type, object>();
 
         public UnitOfWork(SalesAndInventoryDbContext context)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _context = context;
         }
 
-        public IEmployeeRepository Employees => _employeeRepository ??= new EmployeeRepository(this);
-
-        public async Task<int> SaveChangesAsync()
+        public IRepository<TEntity> GetRepository<TEntity>() where TEntity : class
         {
-            return await _context.SaveChangesAsync();
+            var type = typeof(TEntity);
+            if (!_repositories.ContainsKey(type))
+            {
+                _repositories[type] = new Repository<TEntity>(_context);
+            }
+
+            return (IRepository<TEntity>)_repositories[type];
+        }
+
+        public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            using var context = _context;
+            return await context.SaveChangesAsync(cancellationToken);
         }
 
         public void Dispose()
         {
-            _context.Dispose();
+            using var context = _context;
+            context.Dispose();
             GC.SuppressFinalize(this);
-        }
-
-        public DbSet<TEntity> Set<TEntity>() where TEntity : class
-        {
-            return _context.Set<TEntity>();
         }
     }
 }

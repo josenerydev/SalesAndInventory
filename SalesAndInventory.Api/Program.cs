@@ -15,16 +15,17 @@ var connectionString = builder.Configuration.GetConnectionString("SalesAndInvent
 builder.Services.AddDbContext<SalesAndInventoryDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-
-
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Register the repositories
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
-builder.Services.AddScoped(typeof(IEmployeeRepository), typeof(EmployeeRepository));
-builder.Services.AddScoped(typeof(IEmployeeService), typeof(EmployeeService));
+builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+
+// Register the services
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 
 var app = builder.Build();
 

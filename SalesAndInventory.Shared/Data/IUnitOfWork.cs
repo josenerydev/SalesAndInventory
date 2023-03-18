@@ -1,13 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SalesAndInventory.Shared.Repositories;
-using System.Collections.Generic;
+﻿using SalesAndInventory.Shared.Repositories;
 
 namespace SalesAndInventory.Shared.Data
 {
     public interface IUnitOfWork : IDisposable
     {
-        IEmployeeRepository Employees { get; }
-        Task<int> SaveChangesAsync();
-        DbSet<TEntity> Set<TEntity>() where TEntity : class;
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+        IRepository<TEntity> GetRepository<TEntity>() where TEntity : class;
     }
 }

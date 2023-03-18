@@ -1,25 +1,22 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SalesAndInventory.Models;
-using SalesAndInventory.Shared.Data;
 using SalesAndInventory.Shared.Repositories;
 
 namespace SalesAndInventory.Data
 {
     public class EmployeeRepository : Repository<Employee>, IEmployeeRepository
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly SalesAndInventoryDbContext _dbContext;
 
-        public EmployeeRepository(IUnitOfWork unitOfWork)
-            : base(unitOfWork)
+        public EmployeeRepository(SalesAndInventoryDbContext dbContext)
+            : base(dbContext)
         {
-            _unitOfWork = unitOfWork;
+            _dbContext = dbContext;
         }
 
         public async Task<IEnumerable<Employee>> GetEmployeesByManagerId(int managerId)
         {
-            return await _unitOfWork.Set<Employee>()
-                .Where(e => e.ManagerId == managerId)
-                .ToListAsync();
+            return await _dbContext.Employees.Where(e => e.ManagerId == managerId).ToListAsync();
         }
     }
 }
