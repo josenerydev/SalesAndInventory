@@ -11,12 +11,21 @@ var connectionString = builder.Configuration.GetConnectionString("SalesAndInvent
 builder.Services.AddDbContext<SalesAndInventoryDbContext>(options =>
     options.UseSqlServer(connectionString));
 
+
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+// Inicialização do banco de dados para fins de teste
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<SalesAndInventoryDbContext>();
+    DbInitializer.InitializeDatabase(context);
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
