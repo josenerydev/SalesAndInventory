@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
 using SalesAndInventory.Api.Dtos;
 using SalesAndInventory.Api.Services;
 
@@ -9,10 +10,12 @@ namespace SalesAndInventory.Api.Controllers
     public class EmployeesController : ControllerBase
     {
         private readonly IEmployeeService _employeeService;
+        private readonly IValidator<EmployeeDto> _employeeValidator;
 
-        public EmployeesController(IEmployeeService employeeService)
+        public EmployeesController(IEmployeeService employeeService, IValidator<EmployeeDto> employeeValidator)
         {
             _employeeService = employeeService;
+            _employeeValidator = employeeValidator;
         }
 
         [HttpGet]
