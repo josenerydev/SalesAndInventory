@@ -5,6 +5,8 @@ using SalesAndInventory.Api.Repositories;
 using SalesAndInventory.Api.Services;
 using SalesAndInventory.Api.Validators;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Diagnostics;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,7 +29,7 @@ builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 
 builder.Services.AddControllers();
 
-builder.Services.AddFluentValidationAutoValidation();
+//builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<EmployeeDtoValidator>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -35,6 +37,33 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.UseExceptionHandler(errorApp =>
+{
+    errorApp.Run(async context =>
+    {
+        var errorFeature = context.Features.Get<IExceptionHandlerFeature>();
+        var exception = errorFeature.Error;
+
+        if (exception is ValidationException validationException)
+        {
+            context.Response.StatusCode = 400;
+            context.Response.ContentType = "application/json";
+
+            var errors = validationException.Errors.Select(x => new
+            {
+                Field = x.PropertyName,
+                Message = x.ErrorMessage
+            });
+
+            await context.Response.WriteAsync(JsonSerializer.Serialize(new
+            {
+                Message = "Validation errors occurred",
+                Errors = errors
+            }));
+        }
+    });
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

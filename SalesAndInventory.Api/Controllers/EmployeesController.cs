@@ -19,9 +19,10 @@ namespace SalesAndInventory.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<EmployeeDto>> Get()
+        public async Task<ActionResult<IEnumerable<EmployeeDto>>> Get()
         {
-            return await _employeeService.GetAllEmployeesAsync();
+            var employees = await _employeeService.GetAllEmployeesAsync();
+            return Ok(employees);
         }
 
         [HttpGet("{id}")]
@@ -34,15 +35,28 @@ namespace SalesAndInventory.Api.Controllers
                 return NotFound();
             }
 
-            return employee;
+            return Ok(employee);
         }
 
         [HttpPost]
-        public async Task<ActionResult<EmployeeDto>> Create(EmployeeDto employeeDto)
+        public async Task<IActionResult> Create(EmployeeDto employeeDto)
         {
-            await _employeeService.AddEmployeeAsync(employeeDto);
+            var validationResult = _employeeValidator.Validate(employeeDto);
 
-            return CreatedAtAction(nameof(GetById), new { id = employeeDto.EmpId }, employeeDto);
+            if (!validationResult.IsValid)
+            {
+                var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToArray();
+                return BadRequest(errors);
+            }
+
+            var result = await _employeeService.AddEmployeeAsync(employeeDto);
+
+            if (result.Succeeded)
+            {
+                return CreatedAtAction(nameof(GetById), new { id = employeeDto.EmpId }, employeeDto);
+            }
+
+            return BadRequest(result.Errors);
         }
 
         [HttpPut("{id}")]
@@ -53,6 +67,14 @@ namespace SalesAndInventory.Api.Controllers
                 return BadRequest();
             }
 
+            var validationResult = _employeeValidator.Validate(employeeDto);
+
+            if (!validationResult.IsValid)
+            {
+                var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToArray();
+                return BadRequest(errors);
+            }
+
             var employee = await _employeeService.GetEmployeeByIdAsync(id);
 
             if (employee == null)
@@ -60,9 +82,14 @@ namespace SalesAndInventory.Api.Controllers
                 return NotFound();
             }
 
-            await _employeeService.UpdateEmployeeAsync(id, employeeDto);
+            var result = await _employeeService.UpdateEmployeeAsync(id, employeeDto);
 
-            return NoContent();
+            if (result.Succeeded)
+            {
+                return NoContent();
+            }
+
+            return BadRequest(result.Errors);
         }
 
         [HttpDelete("{id}")]
@@ -75,9 +102,14 @@ namespace SalesAndInventory.Api.Controllers
                 return NotFound();
             }
 
-            await _employeeService.DeleteEmployeeAsync(id);
+            var result = await _employeeService.DeleteEmployeeAsync(id);
 
-            return NoContent();
+            if (result.Succeeded)
+            {
+                return NoContent();
+            }
+
+            return BadRequest(result.Errors);
         }
     }
 }
