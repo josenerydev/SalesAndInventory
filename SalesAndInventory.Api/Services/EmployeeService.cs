@@ -16,77 +16,90 @@ namespace SalesAndInventory.Api.Services
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<EmployeeDto>> GetAllEmployees()
+        public async Task<IEnumerable<EmployeeDto>> GetAllEmployeesAsync()
         {
             var employees = await _employeeRepository.GetAllAsync();
             return _mapper.Map<IEnumerable<EmployeeDto>>(employees);
         }
 
-        public async Task<EmployeeDto> GetEmployeeById(int id)
+        public async Task<EmployeeDto> GetEmployeeByIdAsync(int id)
         {
             var employee = await _employeeRepository.GetByIdAsync(id);
             return _mapper.Map<EmployeeDto>(employee);
         }
 
-        public async Task<EmployeeDto> CreateEmployee(EmployeeDto employeeDto)
-        {
-            var employee = _mapper.Map<Employee>(employeeDto);
-            await _employeeRepository.CreateAsync(employee);
-            return _mapper.Map<EmployeeDto>(employee);
-        }
-
-        public async Task<EmployeeDto> UpdateEmployee(int id, EmployeeDto employeeDto)
-        {
-            var existingEmployee = await _employeeRepository.GetByIdAsync(id);
-
-            Employee? manager = employeeDto.ManagerId != null
-                ? await _employeeRepository.GetByIdAsync(employeeDto.ManagerId.Value)
-                : null;
-
-            if (existingEmployee == null)
-            {
-                return null!; // Or throw an exception if you prefer
-            }
-
-            var updatedEmployee = new Employee(
-                     employeeDto.LastName,
-                     employeeDto.FirstName,
-                     employeeDto.Title,
-                     employeeDto.TitleOfCourtesy,
-                     employeeDto.BirthDate,
-                     employeeDto.HireDate,
-                     employeeDto.Address,
-                     employeeDto.City,
-                     employeeDto.Region,
-                     employeeDto.PostalCode,
-                     employeeDto.Country,
-                     employeeDto.Phone,
-                     manager
-                );
-
-            existingEmployee.Update(updatedEmployee);
-
-            await _employeeRepository.UpdateAsync(existingEmployee);
-
-            return _mapper.Map<EmployeeDto>(existingEmployee);
-        }
-
-        public async Task<bool> DeleteEmployee(int id)
-        {
-            var employee = await _employeeRepository.GetByIdAsync(id);
-            if (employee == null)
-            {
-                return false; // Or throw an exception if you prefer
-            }
-
-            await _employeeRepository.DeleteAsync(id);
-            return true;
-        }
-
-        public async Task<IEnumerable<EmployeeDto>> GetEmployeesByManagerId(int managerId)
+        public async Task<IEnumerable<EmployeeDto>> GetEmployeesByManagerIdAsync(int managerId)
         {
             var employees = await _employeeRepository.GetEmployeesByManagerIdAsync(managerId);
             return _mapper.Map<IEnumerable<EmployeeDto>>(employees);
+        }
+
+        public async Task AddEmployeeAsync(EmployeeDto employeeDto)
+        {
+            var employee = _mapper.Map<Employee>(employeeDto);
+            await _employeeRepository.AddAsync(employee);
+            await _employeeRepository.SaveAsync();
+        }
+
+        public async Task UpdateEmployeeAsync(int id, EmployeeDto employeeDto)
+        {
+            var employee = await _employeeRepository.GetByIdAsync(id);
+
+            if (employee != null)
+            {
+                // Atualize apenas as propriedades que foram fornecidas no objeto employeeDto.
+                if (employeeDto.LastName != null)
+                    employee.LastName = employeeDto.LastName;
+
+                if (employeeDto.FirstName != null)
+                    employee.FirstName = employeeDto.FirstName;
+
+                if (employeeDto.Title != null)
+                    employee.Title = employeeDto.Title;
+
+                if (employeeDto.TitleOfCourtesy != null)
+                    employee.TitleOfCourtesy = employeeDto.TitleOfCourtesy;
+
+                if (employeeDto.BirthDate.HasValue)
+                    employee.BirthDate = employeeDto.BirthDate.Value;
+
+                if (employeeDto.HireDate.HasValue)
+                    employee.HireDate = employeeDto.HireDate.Value;
+
+                if (employeeDto.Address != null)
+                    employee.Address = employeeDto.Address;
+
+                if (employeeDto.City != null)
+                    employee.City = employeeDto.City;
+
+                if (employeeDto.Region != null)
+                    employee.Region = employeeDto.Region;
+
+                if (employeeDto.PostalCode != null)
+                    employee.PostalCode = employeeDto.PostalCode;
+
+                if (employeeDto.Country != null)
+                    employee.Country = employeeDto.Country;
+
+                if (employeeDto.Phone != null)
+                    employee.Phone = employeeDto.Phone;
+
+                if (employeeDto.MgrId.HasValue)
+                    employee.MgrId = employeeDto.MgrId;
+
+                _employeeRepository.Update(employee);
+                await _employeeRepository.SaveAsync();
+            }
+        }
+
+        public async Task DeleteEmployeeAsync(int id)
+        {
+            var employee = await _employeeRepository.GetByIdAsync(id);
+            if (employee != null)
+            {
+                _employeeRepository.Delete(employee);
+                await _employeeRepository.SaveAsync();
+            }
         }
     }
 }

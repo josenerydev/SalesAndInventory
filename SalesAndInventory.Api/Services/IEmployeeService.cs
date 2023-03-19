@@ -1,19 +1,20 @@
 ﻿using SalesAndInventory.Api.Dtos;
+using SalesAndInventory.Api.Models;
 
 namespace SalesAndInventory.Api.Services
 {
     public interface IEmployeeService
     {
-        Task<IEnumerable<EmployeeDto>> GetAllEmployees();
+        Task<IEnumerable<EmployeeDto>> GetAllEmployeesAsync();
 
-        Task<EmployeeDto> GetEmployeeById(int id);
+        Task<EmployeeDto> GetEmployeeByIdAsync(int id);
 
-        Task<EmployeeDto> CreateEmployee(EmployeeDto employeeDto);
+        Task<IEnumerable<EmployeeDto>> GetEmployeesByManagerIdAsync(int managerId);
 
-        Task<EmployeeDto> UpdateEmployee(int id, EmployeeDto employeeDto);
+        Task AddEmployeeAsync(EmployeeDto employeeDto);
 
-        Task<bool> DeleteEmployee(int id);
+        Task UpdateEmployeeAsync(int id, EmployeeDto employeeDto);
 
-        Task<IEnumerable<EmployeeDto>> GetEmployeesByManagerId(int managerId);
+        Task DeleteEmployeeAsync(int id);
     }
 }

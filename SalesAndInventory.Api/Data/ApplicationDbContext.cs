@@ -4,20 +4,20 @@ using System.Reflection;
 
 namespace SalesAndInventory.Api.Data
 {
-    public class SalesAndInventoryDbContext : DbContext
+    public class ApplicationDbContext : DbContext
     {
         public DbSet<Employee> Employees { get; set; }
         // DbSet para outras entidades
 
-        public SalesAndInventoryDbContext(DbContextOptions<SalesAndInventoryDbContext> options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseLazyLoadingProxies();
-        }
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    optionsBuilder.UseLazyLoadingProxies();
+        //}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

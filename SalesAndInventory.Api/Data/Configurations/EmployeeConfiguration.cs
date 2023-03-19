@@ -10,31 +10,33 @@ namespace SalesAndInventory.Api.Data.Configurations
         {
             builder.ToTable("Employees", "HR");
 
-            builder.HasKey(e => e.Id);
+            builder.HasKey(e => e.EmpId)
+                .HasName("PK_Employees");
 
-            builder.Property(e => e.Id)
+            builder.Property(e => e.EmpId)
                 .HasColumnName("empid")
-                .IsRequired();
+                .IsRequired()
+                .UseIdentityColumn();
 
             builder.Property(e => e.LastName)
                 .HasColumnName("lastname")
-                .HasMaxLength(20)
-                .IsRequired();
+                .IsRequired()
+                .HasMaxLength(20);
 
             builder.Property(e => e.FirstName)
                 .HasColumnName("firstname")
-                .HasMaxLength(10)
-                .IsRequired();
+                .IsRequired()
+                .HasMaxLength(10);
 
             builder.Property(e => e.Title)
                 .HasColumnName("title")
-                .HasMaxLength(30)
-                .IsRequired();
+                .IsRequired()
+                .HasMaxLength(30);
 
             builder.Property(e => e.TitleOfCourtesy)
                 .HasColumnName("titleofcourtesy")
-                .HasMaxLength(25)
-                .IsRequired();
+                .IsRequired()
+                .HasMaxLength(25);
 
             builder.Property(e => e.BirthDate)
                 .HasColumnName("birthdate")
@@ -46,13 +48,13 @@ namespace SalesAndInventory.Api.Data.Configurations
 
             builder.Property(e => e.Address)
                 .HasColumnName("address")
-                .HasMaxLength(60)
-                .IsRequired();
+                .IsRequired()
+                .HasMaxLength(60);
 
             builder.Property(e => e.City)
                 .HasColumnName("city")
-                .HasMaxLength(15)
-                .IsRequired();
+                .IsRequired()
+                .HasMaxLength(15);
 
             builder.Property(e => e.Region)
                 .HasColumnName("region")
@@ -64,29 +66,32 @@ namespace SalesAndInventory.Api.Data.Configurations
 
             builder.Property(e => e.Country)
                 .HasColumnName("country")
-                .HasMaxLength(15)
-                .IsRequired();
+                .IsRequired()
+                .HasMaxLength(15);
 
             builder.Property(e => e.Phone)
                 .HasColumnName("phone")
-                .HasMaxLength(24)
-                .IsRequired();
+                .IsRequired()
+                .HasMaxLength(24);
 
-            builder.Property(e => e.ManagerId)
+            builder.Property(e => e.MgrId)
                 .HasColumnName("mgrid");
 
             builder.HasOne(e => e.Manager)
-                .WithMany()
-                .HasForeignKey(e => e.ManagerId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder.HasIndex(e => e.LastName)
-                .HasDatabaseName("idx_nc_lastname");
-
-            builder.HasIndex(e => e.PostalCode)
-                .HasDatabaseName("idx_nc_postalcode");
+                .WithMany(e => e.Employees)
+                .HasForeignKey(e => e.MgrId)
+                .HasConstraintName("FK_Employees_Employees")
+                .IsRequired(false);
 
             builder.HasCheckConstraint("CHK_birthdate", "birthdate <= CAST(SYSDATETIME() AS DATE)");
+
+            builder.HasIndex(e => e.LastName)
+                .HasDatabaseName("idx_nc_lastname")
+                .IsUnique(false);
+
+            builder.HasIndex(e => e.PostalCode)
+                .HasDatabaseName("idx_nc_postalcode")
+                .IsUnique(false);
         }
     }
 }

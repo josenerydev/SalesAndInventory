@@ -18,13 +18,13 @@ namespace SalesAndInventory.Api.Controllers
         [HttpGet]
         public async Task<IEnumerable<EmployeeDto>> Get()
         {
-            return await _employeeService.GetAllEmployees();
+            return await _employeeService.GetAllEmployeesAsync();
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<EmployeeDto>> GetById(int id)
         {
-            var employee = await _employeeService.GetEmployeeById(id);
+            var employee = await _employeeService.GetEmployeeByIdAsync(id);
 
             if (employee == null)
             {
@@ -37,27 +37,27 @@ namespace SalesAndInventory.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<EmployeeDto>> Create(EmployeeDto employeeDto)
         {
-            var createdEmployee = await _employeeService.CreateEmployee(employeeDto);
+            await _employeeService.AddEmployeeAsync(employeeDto);
 
-            return CreatedAtAction(nameof(GetById), new { id = createdEmployee.Id }, createdEmployee);
+            return CreatedAtAction(nameof(GetById), new { id = employeeDto.EmpId }, employeeDto);
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, EmployeeDto employeeDto)
         {
-            if (id != employeeDto.Id)
+            if (id != employeeDto.EmpId)
             {
                 return BadRequest();
             }
 
-            var employee = await _employeeService.GetEmployeeById(id);
+            var employee = await _employeeService.GetEmployeeByIdAsync(id);
 
             if (employee == null)
             {
                 return NotFound();
             }
 
-            await _employeeService.UpdateEmployee(id, employeeDto);
+            await _employeeService.UpdateEmployeeAsync(id, employeeDto);
 
             return NoContent();
         }
@@ -65,14 +65,14 @@ namespace SalesAndInventory.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var employee = await _employeeService.GetEmployeeById(id);
+            var employee = await _employeeService.GetEmployeeByIdAsync(id);
 
             if (employee == null)
             {
                 return NotFound();
             }
 
-            await _employeeService.DeleteEmployee(id);
+            await _employeeService.DeleteEmployeeAsync(id);
 
             return NoContent();
         }
