@@ -68,7 +68,7 @@ namespace SalesAndInventory.Api.Tests
             Action action = () => employee.Promote("", newManager);
 
             // Assert
-            action.Should().Throw<ArgumentException>().WithMessage("O novo título não pode ser nulo ou vazio. (Parameter 'newTitle')");
+            action.Should().Throw<ArgumentException>().WithMessage("The new title cannot be null or empty. (Parameter 'newTitle')");
         }
 
         [Fact]
@@ -82,7 +82,7 @@ namespace SalesAndInventory.Api.Tests
             Action action = () => employee.Promote(newTitle, null);
 
             // Assert
-            action.Should().Throw<ArgumentNullException>().WithMessage("O novo gerente não pode ser nulo. (Parameter 'newManager')");
+            action.Should().Throw<ArgumentNullException>().WithMessage("The new manager cannot be null. (Parameter 'newManager')");
         }
 
         [Fact]
@@ -96,7 +96,7 @@ namespace SalesAndInventory.Api.Tests
             Action action = () => employee.Promote(newTitle, employee);
 
             // Assert
-            action.Should().Throw<InvalidOperationException>().WithMessage("Um funcionário não pode ser gerente de si mesmo.");
+            action.Should().Throw<InvalidOperationException>().WithMessage("An employee cannot be their own manager.");
         }
     }
 }

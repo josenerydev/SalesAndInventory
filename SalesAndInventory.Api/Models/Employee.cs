@@ -21,12 +21,10 @@ namespace SalesAndInventory.Api.Models
         public Employee Manager { get; private set; }
         public IReadOnlyCollection<Employee> Subordinates => _subordinates.AsReadOnly();
 
-        private readonly List<Employee> _subordinates;
+        private readonly List<Employee> _subordinates = new List<Employee>();
 
-        // Construtor privado vazio para uso do EF Core
         private Employee()
         {
-            _subordinates = new List<Employee>();
         }
 
         public Employee(int empId, string lastName, string firstName, string title, string titleOfCourtesy,
@@ -49,7 +47,7 @@ namespace SalesAndInventory.Api.Models
             Phone = phone;
             ManagerId = managerId;
             Manager = manager;
-            _subordinates = new List<Employee>(subordinates);
+            _subordinates.AddRange(subordinates);
 
             var validator = new EmployeeValidator();
             validator.ValidateAndThrow(this);
@@ -59,34 +57,33 @@ namespace SalesAndInventory.Api.Models
         {
             if (string.IsNullOrEmpty(newTitle))
             {
-                throw new ArgumentException("O novo título não pode ser nulo ou vazio.", nameof(newTitle));
+                throw new ArgumentException("The new title cannot be null or empty.", nameof(newTitle));
             }
 
             if (newManager == null)
             {
-                throw new ArgumentNullException(nameof(newManager), "O novo gerente não pode ser nulo.");
+                throw new ArgumentNullException(nameof(newManager), "The new manager cannot be null.");
             }
 
             if (EmpId == newManager.EmpId)
             {
-                throw new InvalidOperationException("Um funcionário não pode ser gerente de si mesmo.");
+                throw new InvalidOperationException("An employee cannot be their own manager.");
             }
 
             Title = newTitle;
             SetManager(newManager);
         }
 
-        // Método para definir o gerente de um funcionário
         public void SetManager(Employee manager)
         {
             if (manager == null)
             {
-                throw new ArgumentNullException(nameof(manager), "O gerente não pode ser nulo.");
+                throw new ArgumentNullException(nameof(manager), "The manager cannot be null.");
             }
 
             if (EmpId == manager.EmpId)
             {
-                throw new InvalidOperationException("Um funcionário não pode ser gerente de si mesmo.");
+                throw new InvalidOperationException("An employee cannot be their own manager.");
             }
 
             Manager = manager;
