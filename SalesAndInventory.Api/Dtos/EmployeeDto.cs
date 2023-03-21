@@ -15,6 +15,6 @@
         public string? PostalCode { get; set; }
         public string? Country { get; set; }
         public string? Phone { get; set; }
-        public int? MgrId { get; set; }
+        public int? ManagerId { get; set; }
     }
 }

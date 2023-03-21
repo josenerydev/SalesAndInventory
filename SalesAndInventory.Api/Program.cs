@@ -10,14 +10,17 @@ using System.Text.Json;
 
 try
 {
-    Log.Logger = new LoggerConfiguration()
-        .Enrich.FromLogContext()
-        .WriteTo.Console()
-        .CreateLogger();
-
     var builder = WebApplication.CreateBuilder(args);
 
     builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+
+    Log.Logger = new LoggerConfiguration()
+        .ReadFrom.Configuration(builder.Configuration)
+        //.Enrich.FromLogContext()
+        //.WriteTo.Console()
+        .CreateLogger();
+
+    builder.Host.UseSerilog(); // Adicione esta linha
 
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
