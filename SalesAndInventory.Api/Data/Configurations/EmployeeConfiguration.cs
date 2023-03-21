@@ -74,12 +74,12 @@ namespace SalesAndInventory.Api.Data.Configurations
                 .IsRequired()
                 .HasMaxLength(24);
 
-            builder.Property(e => e.MgrId)
+            builder.Property(e => e.ManagerId)
                 .HasColumnName("mgrid");
 
             builder.HasOne(e => e.Manager)
-                .WithMany(e => e.Employees)
-                .HasForeignKey(e => e.MgrId)
+                .WithMany(e => e.Subordinates)
+                .HasForeignKey(e => e.ManagerId)
                 .HasConstraintName("FK_Employees_Employees")
                 .IsRequired(false);
 

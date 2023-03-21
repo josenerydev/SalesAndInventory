@@ -12,7 +12,7 @@ namespace SalesAndInventory.Api.Repositories
 
         public async Task<IEnumerable<Employee>> GetEmployeesByManagerIdAsync(int managerId)
         {
-            return await _dbSet.Where(e => e.MgrId == managerId).ToListAsync();
+            return await _dbSet.Where(e => e.ManagerId == managerId).ToListAsync();
         }
     }
 }
