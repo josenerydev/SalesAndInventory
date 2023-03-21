@@ -1,81 +1,91 @@
 using FluentValidation;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using SalesAndInventory.Api.Data;
 using SalesAndInventory.Api.Repositories;
 using SalesAndInventory.Api.Services;
 using SalesAndInventory.Api.Validators;
-using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Diagnostics;
+using Serilog;
 using System.Text.Json;
 
-var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
-
-// Adicione o DbContext e configure a string de conexão
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-// Adicione o AutoMapper
-builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
-
-// Registre os repositórios e serviços genéricos
-builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-
-// Registre os repositórios e serviços específicos
-builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-builder.Services.AddScoped<IEmployeeService, EmployeeService>();
-
-builder.Services.AddControllers();
-
-//builder.Services.AddFluentValidationAutoValidation();
-builder.Services.AddValidatorsFromAssemblyContaining<EmployeeDtoValidator>();
-
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-var app = builder.Build();
-
-app.UseExceptionHandler(errorApp =>
+try
 {
-    errorApp.Run(async context =>
+    Log.Logger = new LoggerConfiguration()
+        .Enrich.FromLogContext()
+        .WriteTo.Console()
+        .CreateLogger();
+
+    var builder = WebApplication.CreateBuilder(args);
+
+    builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+    builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
+
+    builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+    builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+    builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+
+    builder.Services.AddControllers();
+
+    builder.Services.AddValidatorsFromAssemblyContaining<EmployeeDtoValidator>();
+
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen();
+
+    var app = builder.Build();
+
+    app.UseSerilogRequestLogging();
+
+    app.UseExceptionHandler(errorApp =>
     {
-        var errorFeature = context.Features.Get<IExceptionHandlerFeature>();
-        var exception = errorFeature.Error;
-
-        if (exception is ValidationException validationException)
+        errorApp.Run(async context =>
         {
-            context.Response.StatusCode = 400;
-            context.Response.ContentType = "application/json";
+            var errorFeature = context.Features.Get<IExceptionHandlerFeature>();
+            var exception = errorFeature.Error;
 
-            var errors = validationException.Errors.Select(x => new
+            if (exception is ValidationException validationException)
             {
-                Field = x.PropertyName,
-                Message = x.ErrorMessage
-            });
+                context.Response.StatusCode = 400;
+                context.Response.ContentType = "application/json";
 
-            await context.Response.WriteAsync(JsonSerializer.Serialize(new
-            {
-                Message = "Validation errors occurred",
-                Errors = errors
-            }));
-        }
+                var errors = validationException.Errors.Select(x => new
+                {
+                    Field = x.PropertyName,
+                    Message = x.ErrorMessage
+                });
+
+                await context.Response.WriteAsync(JsonSerializer.Serialize(new
+                {
+                    Message = "Validation errors occurred",
+                    Errors = errors
+                }));
+            }
+        });
     });
-});
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI();
+    }
+
+    app.UseHttpsRedirection();
+
+    app.UseAuthorization();
+
+    app.MapControllers();
+
+    app.Run();
 }
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Application startup failed");
+}
+finally
+{
+    Log.CloseAndFlush();
+}
