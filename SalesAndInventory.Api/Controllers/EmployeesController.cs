@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SalesAndInventory.Api.Dtos;
 using SalesAndInventory.Api.Services;
+using SalesAndInventory.Api.Utilities;
 
 namespace SalesAndInventory.Api.Controllers
 {
@@ -19,23 +20,23 @@ namespace SalesAndInventory.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<EmployeeDto>>> Get()
+        public async Task<ActionResult<Result<IEnumerable<EmployeeDto>>>> Get()
         {
             var employees = await _employeeService.GetAllEmployeesAsync();
-            return Ok(employees);
+            return Ok(Result<IEnumerable<EmployeeDto>>.Success(employees.Data));
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<EmployeeDto>> GetById(int id)
+        public async Task<ActionResult<Result<EmployeeDto>>> GetById(int id)
         {
             var employee = await _employeeService.GetEmployeeByIdAsync(id);
 
             if (employee == null)
             {
-                return NotFound();
+                return NotFound(Result<EmployeeDto>.Failure("Employee not found"));
             }
 
-            return Ok(employee);
+            return Ok(Result<EmployeeDto>.Success(employee.Data));
         }
 
         [HttpPost]
@@ -46,17 +47,17 @@ namespace SalesAndInventory.Api.Controllers
             if (!validationResult.IsValid)
             {
                 var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToArray();
-                return BadRequest(errors);
+                return BadRequest(Result<EmployeeDto>.Failure(errors));
             }
 
             var result = await _employeeService.AddEmployeeAsync(employeeDto);
 
             if (result.Succeeded)
             {
-                return CreatedAtAction(nameof(GetById), new { id = employeeDto.EmpId }, employeeDto);
+                return CreatedAtAction(nameof(GetById), new { id = employeeDto.EmpId }, Result<EmployeeDto>.Success(employeeDto));
             }
 
-            return BadRequest(result.Errors);
+            return BadRequest(Result<EmployeeDto>.Failure(result.Errors));
         }
 
         [HttpPut("{id}")]
@@ -64,7 +65,7 @@ namespace SalesAndInventory.Api.Controllers
         {
             if (id != employeeDto.EmpId)
             {
-                return BadRequest();
+                return BadRequest(Result<EmployeeDto>.Failure("Invalid employee ID"));
             }
 
             var validationResult = _employeeValidator.Validate(employeeDto);
@@ -72,14 +73,14 @@ namespace SalesAndInventory.Api.Controllers
             if (!validationResult.IsValid)
             {
                 var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToArray();
-                return BadRequest(errors);
+                return BadRequest(Result<EmployeeDto>.Failure(errors));
             }
 
             var employee = await _employeeService.GetEmployeeByIdAsync(id);
 
             if (employee == null)
             {
-                return NotFound();
+                return NotFound(Result<EmployeeDto>.Failure("Employee not found"));
             }
 
             var result = await _employeeService.UpdateEmployeeAsync(id, employeeDto);
@@ -89,7 +90,7 @@ namespace SalesAndInventory.Api.Controllers
                 return NoContent();
             }
 
-            return BadRequest(result.Errors);
+            return BadRequest(Result<EmployeeDto>.Failure(result.Errors));
         }
 
         [HttpDelete("{id}")]
@@ -99,7 +100,7 @@ namespace SalesAndInventory.Api.Controllers
 
             if (employee == null)
             {
-                return NotFound();
+                return NotFound(Result<EmployeeDto>.Failure("Employee not found"));
             }
 
             var result = await _employeeService.DeleteEmployeeAsync(id);
@@ -109,7 +110,7 @@ namespace SalesAndInventory.Api.Controllers
                 return NoContent();
             }
 
-            return BadRequest(result.Errors);
+            return BadRequest(Result<EmployeeDto>.Failure(result.Errors));
         }
     }
 }

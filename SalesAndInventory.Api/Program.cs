@@ -4,23 +4,28 @@ using Microsoft.EntityFrameworkCore;
 using SalesAndInventory.Api.Data;
 using SalesAndInventory.Api.Repositories;
 using SalesAndInventory.Api.Services;
+using SalesAndInventory.Api.Utilities;
 using SalesAndInventory.Api.Validators;
 using Serilog;
 using System.Text.Json;
 
 try
 {
-    var builder = WebApplication.CreateBuilder(args);
-
-    builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+    var configuration = new ConfigurationBuilder()
+        .SetBasePath(Directory.GetCurrentDirectory())
+        .AddJsonFile("appsettings.json")
+        .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", true)
+        .Build();
 
     Log.Logger = new LoggerConfiguration()
-        .ReadFrom.Configuration(builder.Configuration)
-        //.Enrich.FromLogContext()
-        //.WriteTo.Console()
+        .ReadFrom.Configuration(configuration)
         .CreateLogger();
 
-    builder.Host.UseSerilog(); // Adicione esta linha
+    Log.Information("Starting host");
+
+    var builder = WebApplication.CreateBuilder(args);
+
+    builder.Host.UseSerilog();
 
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -31,6 +36,9 @@ try
 
     builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
     builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+
+    builder.Services.AddScoped<ISupplierRepository, SupplierRepository>();
+    builder.Services.AddScoped<ISupplierService, SupplierService>();
 
     builder.Services.AddControllers();
 
@@ -61,11 +69,9 @@ try
                     Message = x.ErrorMessage
                 });
 
-                await context.Response.WriteAsync(JsonSerializer.Serialize(new
-                {
-                    Message = "Validation errors occurred",
-                    Errors = errors
-                }));
+                var result = Result<object>.Failure(errors.Select(e => $"Field {e.Field}: {e.Message}").ToArray());
+
+                await context.Response.WriteAsync(JsonSerializer.Serialize(result));
             }
         });
     });
