@@ -1,6 +1,6 @@
 ﻿using FluentMigrator;
 
-namespace SalesAndInventory.Migrations.Migrations
+namespace SalesAndInventory.DatabaseUpgradeTool.Migrations
 {
     [Migration(1)]
     public class CreateEmployeesTable : Migration
