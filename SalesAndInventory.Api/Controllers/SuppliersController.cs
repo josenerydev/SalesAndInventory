@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SalesAndInventory.Api.Dtos;
 using SalesAndInventory.Api.Services;
+using SalesAndInventory.Api.Utilities;
 
 namespace SalesAndInventory.Api.Controllers
 {
@@ -19,23 +20,23 @@ namespace SalesAndInventory.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<SupplierDto>>> Get()
+        public async Task<ActionResult<Result<IEnumerable<SupplierDto>>>> Get()
         {
             var suppliers = await _supplierService.GetAllSuppliersAsync();
-            return Ok(suppliers);
+            return Ok(Result<IEnumerable<SupplierDto>>.Success(suppliers.Data));
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<SupplierDto>> GetById(int id)
+        public async Task<ActionResult<Result<SupplierDto>>> GetById(int id)
         {
             var supplier = await _supplierService.GetSupplierByIdAsync(id);
 
             if (supplier == null)
             {
-                return NotFound();
+                return NotFound(Result<SupplierDto>.Failure("Supplier not found"));
             }
 
-            return Ok(supplier);
+            return Ok(Result<SupplierDto>.Success(supplier.Data));
         }
 
         [HttpPost]
@@ -46,17 +47,17 @@ namespace SalesAndInventory.Api.Controllers
             if (!validationResult.IsValid)
             {
                 var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToArray();
-                return BadRequest(errors);
+                return BadRequest(Result<SupplierDto>.Failure(errors));
             }
 
             var result = await _supplierService.AddSupplierAsync(supplierDto);
 
             if (result.Succeeded)
             {
-                return CreatedAtAction(nameof(GetById), new { id = supplierDto.SupplierId }, supplierDto);
+                return CreatedAtAction(nameof(GetById), new { id = supplierDto.SupplierId }, Result<SupplierDto>.Success(supplierDto));
             }
 
-            return BadRequest(result.Errors);
+            return BadRequest(Result<SupplierDto>.Failure(result.Errors));
         }
 
         [HttpPut("{id}")]
@@ -64,7 +65,7 @@ namespace SalesAndInventory.Api.Controllers
         {
             if (id != supplierDto.SupplierId)
             {
-                return BadRequest();
+                return BadRequest(Result<SupplierDto>.Failure("Invalid supplier ID"));
             }
 
             var validationResult = _supplierValidator.Validate(supplierDto);
@@ -72,14 +73,14 @@ namespace SalesAndInventory.Api.Controllers
             if (!validationResult.IsValid)
             {
                 var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToArray();
-                return BadRequest(errors);
+                return BadRequest(Result<SupplierDto>.Failure(errors));
             }
 
             var supplier = await _supplierService.GetSupplierByIdAsync(id);
 
             if (supplier == null)
             {
-                return NotFound();
+                return NotFound(Result<SupplierDto>.Failure("Supplier not found"));
             }
 
             var result = await _supplierService.UpdateSupplierAsync(id, supplierDto);
@@ -89,7 +90,7 @@ namespace SalesAndInventory.Api.Controllers
                 return NoContent();
             }
 
-            return BadRequest(result.Errors);
+            return BadRequest(Result<SupplierDto>.Failure(result.Errors));
         }
 
         [HttpDelete("{id}")]
@@ -99,7 +100,7 @@ namespace SalesAndInventory.Api.Controllers
 
             if (supplier == null)
             {
-                return NotFound();
+                return NotFound(Result<SupplierDto>.Failure("Supplier not found"));
             }
 
             var result = await _supplierService.DeleteSupplierAsync(id);
@@ -109,7 +110,7 @@ namespace SalesAndInventory.Api.Controllers
                 return NoContent();
             }
 
-            return BadRequest(result.Errors);
+            return BadRequest(Result<SupplierDto>.Failure(result.Errors));
         }
     }
 }
