@@ -22,6 +22,9 @@ namespace SalesAndInventory.Api.Data.Configurations
             builder.Property(c => c.Description)
                 .HasMaxLength(200)
                 .IsRequired();
+
+            builder.HasIndex(c => c.CategoryName)
+                .HasDatabaseName("idx_nc_categoryname");
         }
     }
 }
