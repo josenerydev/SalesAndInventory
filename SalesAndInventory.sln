@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SalesAndInventory.Tests", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "build\_build.csproj", "{C8D05752-9A8E-4865-83EC-4F5DFD76132B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalesAndInventory.DatabaseUpgradeTool", "SalesAndInventory.DatabaseUpgradeTool\SalesAndInventory.DatabaseUpgradeTool.csproj", "{370E214C-74BB-4099-835F-19CD0AF6F43B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SalesAndInventory.DatabaseUpgradeTool", "SalesAndInventory.DatabaseUpgradeTool\SalesAndInventory.DatabaseUpgradeTool.csproj", "{370E214C-74BB-4099-835F-19CD0AF6F43B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalesAndInventory.IntegrationTests", "SalesAndInventory.IntegrationTests\SalesAndInventory.IntegrationTests.csproj", "{233E7E96-D593-4120-B1CD-5306E88048C9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +33,10 @@ Global
 		{370E214C-74BB-4099-835F-19CD0AF6F43B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{370E214C-74BB-4099-835F-19CD0AF6F43B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{370E214C-74BB-4099-835F-19CD0AF6F43B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{233E7E96-D593-4120-B1CD-5306E88048C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{233E7E96-D593-4120-B1CD-5306E88048C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{233E7E96-D593-4120-B1CD-5306E88048C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{233E7E96-D593-4120-B1CD-5306E88048C9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

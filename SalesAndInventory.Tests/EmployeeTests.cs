@@ -5,7 +5,7 @@ using SalesAndInventory.Api.Models;
 using System;
 using System.Collections.Generic;
 
-namespace SalesAndInventory.Api.Tests
+namespace SalesAndInventory.Tests
 {
     public class EmployeeTests
     {
