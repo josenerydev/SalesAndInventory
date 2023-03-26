@@ -1,19 +1,9 @@
-﻿namespace SalesAndInventory.Api.Models
+﻿using System.Collections.Generic;
+
+namespace SalesAndInventory.Api.Models
 {
     public class Supplier
     {
-        public int SupplierId { get; private set; }
-        public string CompanyName { get; private set; }
-        public string ContactName { get; private set; }
-        public string ContactTitle { get; private set; }
-        public string Address { get; private set; }
-        public string City { get; private set; }
-        public string? Region { get; private set; }
-        public string? PostalCode { get; private set; }
-        public string Country { get; private set; }
-        public string Phone { get; private set; }
-        public string? Fax { get; private set; }
-
         private Supplier()
         { }
 
@@ -31,5 +21,18 @@
             PostalCode = postalCode;
             Fax = fax;
         }
+
+        public int SupplierId { get; private set; }
+        public string CompanyName { get; private set; }
+        public string ContactName { get; private set; }
+        public string ContactTitle { get; private set; }
+        public string Address { get; private set; }
+        public string City { get; private set; }
+        public string Region { get; private set; }
+        public string PostalCode { get; private set; }
+        public string Country { get; private set; }
+        public string Phone { get; private set; }
+        public string Fax { get; private set; }
+        public ICollection<Product> Products { get; private set; } = new HashSet<Product>();
     }
 }

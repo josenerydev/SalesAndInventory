@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SalesAndInventory.Api.Models;
 
 namespace SalesAndInventory.Api.Data.Configurations
@@ -11,20 +11,11 @@ namespace SalesAndInventory.Api.Data.Configurations
             builder.ToTable("Categories", "Production");
 
             builder.HasKey(c => c.CategoryId);
+            builder.Property(c => c.CategoryId).HasColumnName("categoryid").ValueGeneratedOnAdd();
+            builder.Property(c => c.CategoryName).IsRequired().HasColumnName("categoryname").HasMaxLength(15);
+            builder.Property(c => c.Description).IsRequired().HasColumnName("description").HasMaxLength(200);
 
-            builder.Property(c => c.CategoryId)
-                .ValueGeneratedOnAdd();
-
-            builder.Property(c => c.CategoryName)
-                .HasMaxLength(15)
-                .IsRequired();
-
-            builder.Property(c => c.Description)
-                .HasMaxLength(200)
-                .IsRequired();
-
-            builder.HasIndex(c => c.CategoryName)
-                .HasDatabaseName("idx_nc_categoryname");
+            builder.HasIndex(c => c.CategoryName).HasDatabaseName("idx_nc_categoryname");
         }
     }
 }

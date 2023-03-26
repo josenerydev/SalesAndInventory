@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SalesAndInventory.Api.Models;
 
 namespace SalesAndInventory.Api.Data.Configurations
@@ -11,14 +11,9 @@ namespace SalesAndInventory.Api.Data.Configurations
             builder.ToTable("Shippers", "Sales");
 
             builder.HasKey(s => s.ShipperId);
-
-            builder.Property(s => s.CompanyName)
-                .HasMaxLength(40)
-                .IsRequired();
-
-            builder.Property(s => s.Phone)
-                .HasMaxLength(24)
-                .IsRequired();
+            builder.Property(s => s.ShipperId).HasColumnName("shipperid").ValueGeneratedOnAdd();
+            builder.Property(s => s.CompanyName).IsRequired().HasColumnName("companyname").HasMaxLength(40);
+            builder.Property(s => s.Phone).IsRequired().HasColumnName("phone").HasMaxLength(24);
         }
     }
 }

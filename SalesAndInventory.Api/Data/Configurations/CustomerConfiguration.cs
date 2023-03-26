@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SalesAndInventory.Api.Models;
 
 namespace SalesAndInventory.Api.Data.Configurations
@@ -10,56 +10,23 @@ namespace SalesAndInventory.Api.Data.Configurations
         {
             builder.ToTable("Customers", "Sales");
 
-            builder.HasKey(c => c.CustomerId);
+            builder.HasKey(c => c.CustId);
+            builder.Property(c => c.CustId).HasColumnName("custid").ValueGeneratedOnAdd();
+            builder.Property(c => c.CompanyName).IsRequired().HasColumnName("companyname").HasMaxLength(40);
+            builder.Property(c => c.ContactName).IsRequired().HasColumnName("contactname").HasMaxLength(30);
+            builder.Property(c => c.ContactTitle).IsRequired().HasColumnName("contacttitle").HasMaxLength(30);
+            builder.Property(c => c.Address).IsRequired().HasColumnName("address").HasMaxLength(60);
+            builder.Property(c => c.City).IsRequired().HasColumnName("city").HasMaxLength(15);
+            builder.Property(c => c.Region).HasColumnName("region").HasMaxLength(15);
+            builder.Property(c => c.PostalCode).HasColumnName("postalcode").HasMaxLength(10);
+            builder.Property(c => c.Country).IsRequired().HasColumnName("country").HasMaxLength(15);
+            builder.Property(c => c.Phone).IsRequired().HasColumnName("phone").HasMaxLength(24);
+            builder.Property(c => c.Fax).HasColumnName("fax").HasMaxLength(24);
 
-            builder.Property(c => c.CompanyName)
-                .HasMaxLength(40)
-                .IsRequired();
-
-            builder.Property(c => c.ContactName)
-                .HasMaxLength(30)
-                .IsRequired();
-
-            builder.Property(c => c.ContactTitle)
-                .HasMaxLength(30)
-                .IsRequired();
-
-            builder.Property(c => c.Address)
-                .HasMaxLength(60)
-                .IsRequired();
-
-            builder.Property(c => c.City)
-                .HasMaxLength(15)
-                .IsRequired();
-
-            builder.Property(c => c.Region)
-                .HasMaxLength(15);
-
-            builder.Property(c => c.PostalCode)
-                .HasMaxLength(10);
-
-            builder.Property(c => c.Country)
-                .HasMaxLength(15)
-                .IsRequired();
-
-            builder.Property(c => c.Phone)
-                .HasMaxLength(24)
-                .IsRequired();
-
-            builder.Property(c => c.Fax)
-                .HasMaxLength(24);
-
-            builder.HasIndex(c => c.City)
-                .HasDatabaseName("idx_nc_city");
-
-            builder.HasIndex(c => c.CompanyName)
-                .HasDatabaseName("idx_nc_companyname");
-
-            builder.HasIndex(c => c.PostalCode)
-                .HasDatabaseName("idx_nc_postalcode");
-
-            builder.HasIndex(c => c.Region)
-                .HasDatabaseName("idx_nc_region");
+            builder.HasIndex(c => c.City).HasDatabaseName("idx_nc_city");
+            builder.HasIndex(c => c.CompanyName).HasDatabaseName("idx_nc_companyname");
+            builder.HasIndex(c => c.PostalCode).HasDatabaseName("idx_nc_postalcode");
+            builder.HasIndex(c => c.Region).HasDatabaseName("idx_nc_region");
         }
     }
 }
