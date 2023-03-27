@@ -1,10 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.Data.SqlClient;
+﻿using Evolve.Configuration;
+using Evolve.Dialect.SQLServer;
 using Microsoft.EntityFrameworkCore;
 using SalesAndInventory.Api.Data;
 using SalesAndInventory.Api.Models;
-using Xunit;
+using System.Diagnostics;
 
 namespace SalesAndInventory.IntegrationTests
 {
@@ -18,7 +17,8 @@ namespace SalesAndInventory.IntegrationTests
                 .UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=SalesAndInventoryTest;Trusted_Connection=True;MultipleActiveResultSets=true")
                 .Options;
             _context = new ApplicationDbContext(options);
-            _context.Database.EnsureCreated();
+            //_context.Database.EnsureCreated();
+            ApplyDatabaseMigrations(_context);
         }
 
         [Fact]
@@ -96,6 +96,17 @@ namespace SalesAndInventory.IntegrationTests
         {
             _context.Database.EnsureDeleted();
             _context.Dispose();
+        }
+
+        private void ApplyDatabaseMigrations(DbContext context)
+        {
+            var evolve = new Evolve.Evolve(context.Database.GetDbConnection(), msg => Debug.WriteLine(msg))
+            {
+                Locations = new List<string> { Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..\\..\\..\\db\\migrations")) },
+                IsEraseDisabled = true
+            };
+
+            evolve.Migrate();
         }
     }
 }
