@@ -5,6 +5,8 @@ VisualStudioVersion = 17.5.33502.453
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SalesAndInventory.Api", "SalesAndInventory.Api\SalesAndInventory.Api.csproj", "{0C272681-B9DF-437E-84FF-D3FD9AC66B9E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalesAndInventory.IntegrationTests", "SalesAndInventory.IntegrationTests\SalesAndInventory.IntegrationTests.csproj", "{F67348D9-D702-471A-92A8-7F3F24DF14FB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{0C272681-B9DF-437E-84FF-D3FD9AC66B9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C272681-B9DF-437E-84FF-D3FD9AC66B9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C272681-B9DF-437E-84FF-D3FD9AC66B9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F67348D9-D702-471A-92A8-7F3F24DF14FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F67348D9-D702-471A-92A8-7F3F24DF14FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F67348D9-D702-471A-92A8-7F3F24DF14FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F67348D9-D702-471A-92A8-7F3F24DF14FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

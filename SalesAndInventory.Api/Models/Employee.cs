@@ -44,5 +44,10 @@ namespace SalesAndInventory.Api.Models
         public Employee Manager { get; private set; }
         public ICollection<Employee> Subordinates { get; private set; } = new HashSet<Employee>();
         public ICollection<Order> Orders { get; private set; } = new HashSet<Order>();
+
+        public void UpdateCity(string city)
+        {
+            City = city;
+        }
     }
 }
