@@ -1,0 +1,7 @@
+**
+!mssql/wait-for-it.sh
+!mssql/entrypoint.sh
+!mssql/setup.sh
+!mssql/create_database.sql
+!mssql/Dockerfile
+!db/migrations/

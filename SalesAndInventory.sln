@@ -5,7 +5,33 @@ VisualStudioVersion = 17.5.33502.453
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SalesAndInventory.Api", "SalesAndInventory.Api\SalesAndInventory.Api.csproj", "{0C272681-B9DF-437E-84FF-D3FD9AC66B9E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalesAndInventory.IntegrationTests", "SalesAndInventory.IntegrationTests\SalesAndInventory.IntegrationTests.csproj", "{F67348D9-D702-471A-92A8-7F3F24DF14FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SalesAndInventory.IntegrationTests", "SalesAndInventory.IntegrationTests\SalesAndInventory.IntegrationTests.csproj", "{F67348D9-D702-471A-92A8-7F3F24DF14FB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "db", "db", "{FC0A5C9A-CFB9-4FF3-96EC-F3603492E581}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "migrations", "migrations", "{74D7C83A-546F-42BE-8571-BDFE22A82688}"
+	ProjectSection(SolutionItems) = preProject
+		db\migrations\V1_0_0__Create_Schemas.sql = db\migrations\V1_0_0__Create_Schemas.sql
+		db\migrations\V1_0_1__Create_Employees_table.sql = db\migrations\V1_0_1__Create_Employees_table.sql
+		db\migrations\V1_0_2__Create_Suppliers_table.sql = db\migrations\V1_0_2__Create_Suppliers_table.sql
+		db\migrations\V1_0_3__Create_Categories_table.sql = db\migrations\V1_0_3__Create_Categories_table.sql
+		db\migrations\V1_0_4__Create_Products_table.sql = db\migrations\V1_0_4__Create_Products_table.sql
+		db\migrations\V1_0_5__Create_Customers_table.sql = db\migrations\V1_0_5__Create_Customers_table.sql
+		db\migrations\V1_0_6__Create_Shippers_table.sql = db\migrations\V1_0_6__Create_Shippers_table.sql
+		db\migrations\V1_0_7__Create_Orders_table.sql = db\migrations\V1_0_7__Create_Orders_table.sql
+		db\migrations\V1_0_8__Create_OrderDetails_table.sql = db\migrations\V1_0_8__Create_OrderDetails_table.sql
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "mssql", "mssql", "{CCD3BD76-2A5F-48CB-9761-8FAC03B658E6}"
+	ProjectSection(SolutionItems) = preProject
+		mssql\create_database.sql = mssql\create_database.sql
+		mssql\docker-compose.yml = mssql\docker-compose.yml
+		mssql\entrypoint.sh = mssql\entrypoint.sh
+		mssql\mssql.Dockerfile = mssql\mssql.Dockerfile
+		mssql\README.md = mssql\README.md
+		mssql\setup.sh = mssql\setup.sh
+		mssql\wait-for-it.sh = mssql\wait-for-it.sh
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,6 +50,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{74D7C83A-546F-42BE-8571-BDFE22A82688} = {FC0A5C9A-CFB9-4FF3-96EC-F3603492E581}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {63787A09-0C78-45DE-849A-D5C0F9FD5102}
