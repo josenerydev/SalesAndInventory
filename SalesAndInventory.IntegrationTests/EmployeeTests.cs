@@ -3,13 +3,14 @@ using SalesAndInventory.Api.Models;
 
 namespace SalesAndInventory.IntegrationTests
 {
+    [Collection("TestEnvironment")]
     public class EmployeeTests
     {
         private readonly ApplicationDbContext _context;
 
-        public EmployeeTests()
+        public EmployeeTests(TestEnvironmentFixture fixture)
         {
-            _context = TestEnvironmentFixture.Instance.Context;
+            _context = fixture.Context;
         }
 
         [Fact]
