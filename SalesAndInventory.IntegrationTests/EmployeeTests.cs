@@ -1,24 +1,15 @@
-﻿using Evolve.Configuration;
-using Evolve.Dialect.SQLServer;
-using Microsoft.EntityFrameworkCore;
-using SalesAndInventory.Api.Data;
+﻿using SalesAndInventory.Api.Data;
 using SalesAndInventory.Api.Models;
-using System.Diagnostics;
 
 namespace SalesAndInventory.IntegrationTests
 {
-    public class EmployeeTests : IDisposable
+    public class EmployeeTests
     {
         private readonly ApplicationDbContext _context;
 
         public EmployeeTests()
         {
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=SalesAndInventoryTest;Trusted_Connection=True;MultipleActiveResultSets=true")
-                .Options;
-            _context = new ApplicationDbContext(options);
-            //_context.Database.EnsureCreated();
-            ApplyDatabaseMigrations(_context);
+            _context = TestEnvironmentFixture.Instance.Context;
         }
 
         [Fact]
@@ -40,73 +31,59 @@ namespace SalesAndInventory.IntegrationTests
         public async Task Can_Read_Employee()
         {
             // Arrange
-            var employee = new Employee("Smith", "Jane", "Manager", "Ms.", new DateTime(1975, 6, 15),
-                new DateTime(2019, 5, 1), "456 Main Street", "Another City", "USA", "555-5678");
-            _context.Employees.Add(employee);
+            var newEmployee = new Employee("Doe", "Jane", "Developer", "Ms.", new DateTime(1985, 1, 1),
+                new DateTime(2021, 1, 1), "456 Test Street", "Test City", "USA", "555-6789");
+            _context.Employees.Add(newEmployee);
             await _context.SaveChangesAsync();
+            int empId = newEmployee.EmpId;
 
             // Act
-            var foundEmployee = await _context.Employees.FindAsync(employee.EmpId);
+            var employee = await _context.Employees.FindAsync(empId);
 
             // Assert
-            Assert.NotNull(foundEmployee);
-            Assert.Equal(employee.FirstName, foundEmployee.FirstName);
+            Assert.NotNull(employee);
+            Assert.Equal(empId, employee.EmpId);
         }
 
         [Fact]
         public async Task Can_Update_Employee()
         {
             // Arrange
-            var employee = new Employee("Brown", "Alice", "Developer", "Mrs.", new DateTime(1985, 4, 20),
-                new DateTime(2021, 3, 15), "789 Test Avenue", "Test City", "USA", "555-2468");
-            _context.Employees.Add(employee);
+            var newEmployee = new Employee("Smith", "John", "Developer", "Mr.", new DateTime(1980, 1, 1),
+                new DateTime(2020, 1, 1), "123 Test Street", "Test City", "USA", "555-1234");
+            _context.Employees.Add(newEmployee);
             await _context.SaveChangesAsync();
+            int empId = newEmployee.EmpId;
+            var newCity = "New City";
 
             // Act
-            employee = _context.Employees.Single(e => e.EmpId == employee.EmpId);
-            employee.UpdateCity("Updated City");
-            _context.Entry(employee).State = EntityState.Modified;
+            var employee = await _context.Employees.FindAsync(empId);
+            employee.UpdateCity(newCity);
             await _context.SaveChangesAsync();
+            var updatedEmployee = await _context.Employees.FindAsync(empId);
 
             // Assert
-            var updatedEmployee = await _context.Employees.FindAsync(employee.EmpId);
-            Assert.Equal("Updated City", updatedEmployee.City);
+            Assert.Equal(newCity, updatedEmployee.City);
         }
 
         [Fact]
         public async Task Can_Delete_Employee()
         {
             // Arrange
-            var employee = new Employee("Martin", "Bob", "Sales", "Mr.", new DateTime(1970, 8, 30),
-                new DateTime(2018, 10, 10), "321 Sample Street", "Sample City", "USA", "555-1598");
-            _context.Employees.Add(employee);
+            var newEmployee = new Employee("Brown", "Mary", "Developer", "Mrs.", new DateTime(1983, 1, 1),
+                new DateTime(2022, 1, 1), "789 Test Street", "Test City", "USA", "555-4321");
+            _context.Employees.Add(newEmployee);
             await _context.SaveChangesAsync();
+            int empId = newEmployee.EmpId;
 
             // Act
-            var employeeToDelete = await _context.Employees.FindAsync(employee.EmpId);
-            _context.Employees.Remove(employeeToDelete);
+            var employee = await _context.Employees.FindAsync(empId);
+            _context.Employees.Remove(employee);
             await _context.SaveChangesAsync();
+            var deletedEmployee = await _context.Employees.FindAsync(empId);
 
             // Assert
-            var deletedEmployee = await _context.Employees.FindAsync(employee.EmpId);
             Assert.Null(deletedEmployee);
-        }
-
-        public void Dispose()
-        {
-            _context.Database.EnsureDeleted();
-            _context.Dispose();
-        }
-
-        private void ApplyDatabaseMigrations(DbContext context)
-        {
-            var evolve = new Evolve.Evolve(context.Database.GetDbConnection(), msg => Debug.WriteLine(msg))
-            {
-                Locations = new List<string> { Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..\\..\\..\\db\\migrations")) },
-                IsEraseDisabled = true
-            };
-
-            evolve.Migrate();
         }
     }
 }

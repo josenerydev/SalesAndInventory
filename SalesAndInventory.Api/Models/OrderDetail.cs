@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SalesAndInventory.Api.Models
+﻿namespace SalesAndInventory.Api.Models
 {
     public class OrderDetail
     {

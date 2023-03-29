@@ -1,10 +1,5 @@
 ﻿// Employee.cs
 
-using System.Diagnostics.Metrics;
-using System.Net;
-using System.Numerics;
-using System;
-
 namespace HR.Domain.Test
 {
     public class Employee

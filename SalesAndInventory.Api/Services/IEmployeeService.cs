@@ -1,5 +1,4 @@
 ﻿using SalesAndInventory.Api.Dtos;
-using SalesAndInventory.Api.Models;
 using SalesAndInventory.Api.Utilities;
 
 namespace SalesAndInventory.Api.Services

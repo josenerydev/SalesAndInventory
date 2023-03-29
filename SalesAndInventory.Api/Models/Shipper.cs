@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace SalesAndInventory.Api.Models
+﻿namespace SalesAndInventory.Api.Models
 {
     public class Shipper
     {
