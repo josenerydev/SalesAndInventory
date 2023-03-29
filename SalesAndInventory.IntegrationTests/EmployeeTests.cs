@@ -3,8 +3,7 @@ using SalesAndInventory.Api.Models;
 
 namespace SalesAndInventory.IntegrationTests
 {
-    [Collection("TestEnvironment")]
-    public class EmployeeTests
+    public class EmployeeTests : IClassFixture<TestEnvironmentFixture>
     {
         private readonly ApplicationDbContext _context;
 
