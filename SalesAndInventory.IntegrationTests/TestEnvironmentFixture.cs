@@ -1,8 +1,10 @@
 ﻿using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
+using EvolveDb;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using SalesAndInventory.Api.Data;
+using System.Diagnostics;
 
 namespace SalesAndInventory.IntegrationTests
 {
@@ -25,6 +27,15 @@ namespace SalesAndInventory.IntegrationTests
 
             _mssqlContainer.StartAsync().Wait();
 
+            // Execute command inside the container
+            var cmd = new[] { "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost,1433", "-U", "SA", "-P", "YourStrong!Passw0rd", "-Q", "CREATE DATABASE SalesAndInventoryTest" };
+            var result = _mssqlContainer.ExecAsync(cmd).Result;
+
+            if (result.ExitCode != 0)
+            {
+                throw new Exception($"Error executing command: {result.Stderr}");
+            }
+
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
@@ -37,6 +48,18 @@ namespace SalesAndInventory.IntegrationTests
                 .Options;
 
             Context = new ApplicationDbContext(options);
+            ApplyDatabaseMigrations(Context);
+        }
+
+        private void ApplyDatabaseMigrations(DbContext context)
+        {
+            var evolve = new Evolve(context.Database.GetDbConnection(), msg => Debug.WriteLine(msg))
+            {
+                Locations = new[] { Path.GetFullPath("..\\..\\..\\..\\db\\migrations") },
+                IsEraseDisabled = true
+            };
+
+            evolve.Migrate();
         }
 
         public async void Dispose()
